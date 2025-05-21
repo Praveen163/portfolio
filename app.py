@@ -1,14 +1,9 @@
 from dotenv import load_dotenv
 from openai import OpenAI
-import json
-import os
-import requests
 from pypdf import PdfReader
 # --- Add Flask imports ---
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
-import io
-import tempfile
 
 
 load_dotenv(override=True)
@@ -18,7 +13,7 @@ class Me:
 
     def __init__(self):
         # self.openai = OpenAI()
-        self.gemini = OpenAI(api_key= os.getenv("GEMINI_API_KEY"), base_url="https://generativelanguage.googleapis.com/v1beta/openai/")
+        self.gemini = OpenAI(api_key= "AIzaSyBMDSTsqb2mKJ57jk5PcDY4Wk1vYN6uZ8s" , base_url="https://generativelanguage.googleapis.com/v1beta/openai/")
 
         self.name = "Praveen Kumar"
         reader = PdfReader("me/linkedin.pdf")
