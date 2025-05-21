@@ -61,7 +61,7 @@ def chat():
 
 @app.route('/')
 def index():
-    return send_file('static/index.html')
+    return jsonify({'response': 'working'})
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 10000))  # Default to 10000 as per Render docs
