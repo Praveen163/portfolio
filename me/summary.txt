@@ -1,0 +1,366 @@
+My name is Praveen Kumar. I'm an software engineer and agentic ai engineer and nyapata founder. I'm originally from Delhi, India.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[]{deedy-resume-openfont}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{relsize}
+
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     LAST UPDATED DATE
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\lastupdated
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     TITLE NAME
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\namesection{Praveen}{Kumar}{
+\href{https://www.linkedin.com/in/praveen-nnn/}{LinkedIn } \space | \space 
+\href{mailto:praveen0nnn@gmail.com}{praveen0nnn@gmail.com} \space | \space \href{https://wa.me/+918860508848}{+91-886-050-8848}   | \space Delhi, India
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     COLUMN ONE
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{minipage}[t]{0.30\textwidth} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     EDUCATION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Education} 
+\subsection{Delhi Technological \newline University (\textsmaller{formerly DCE})}
+\descript{B.Tech Electronics and Communication Engineering}
+\location{Grad. June 2025 | Delhi, India }
+\sectionsep
+\sectionsep
+\subsection{Kendriya Vidyalaya 
+\newline No. II Delhi}
+\location{Grad. July 2021 | Delhi, India }
+
+\sectionsep
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     LINKS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Links} 
+
+% LinkedIn: \href{https://www.linkedin.com/in/praveen-nnn/}{\custombold{praveen-nnn}} \\
+% Github: \href{https://github.com/praveen163}{\custombold{praveen163}} \\
+% \sectionsep
+
+\section{Coursework}
+\textbullet{} Data Structures\\ 
+\textbullet{} Algorithm Design and Analysis\\
+\textbullet{} Object Oriented Software Eng\\
+\textbullet{} Software Engineering\\
+\textbullet{} Fundamentals of IT\\
+\textbullet{} Python Programming\\
+\textbullet{} Theory of Computation\\
+\textbullet{} Digital Electronics\\
+\textbullet{} Computer Architecture\\
+\textbullet{} Soft Computing\\
+\sectionsep 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     SKILLS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Skills}
+\subsection{Core  Competencies}
+\textbullet{} Data Structures 
+\textbullet{} Algorithm Optimization 
+\textbullet{} Analytical Problem-Solving 
+\textbullet{} System Design
+\textbullet{} Frontend Development 
+\textbullet{} Backend Development 
+
+\sectionsep
+\subsection{Programming}
+\textbullet{} Python 
+\textbullet{} JavaScript
+\textbullet{} C++
+\textbullet{} C
+\textbullet{} Solidity
+\textbullet{} Assembly Language
+\sectionsep
+
+\subsection{Web Technologies}
+\textbullet{} React.js
+\textbullet{} Node.js
+\textbullet{} Tailwind CSS 
+\textbullet{} NoSQL Database (MongoDB)
+\textbullet{} Express.js
+\textbullet{} MCP Server
+\textbullet{} Docker
+\textbullet{} Web3.js for Blockchain Development
+\textbullet{} Redis
+\textbullet{} HTML
+\textbullet{} CSS
+\textbullet{} MySQL
+\textbullet{} GIT
+\textbullet{} GitHub 
+
+
+
+
+
+
+\sectionsep
+
+
+
+\section{Achievements}
+
+
+\textbullet{} Secured 2nd place out of 300 participants in Hackathon BFF
+
+\textbullet{} Outstanding Mentor Award by Delhi govt
+
+\textbullet{}  Corporate Head at India's largest film and festival society Yuvaan, securing sponsorship deals
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     COLUMN TWO
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{minipage} 
+\hfill
+\begin{minipage}[t]{0.66\textwidth} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     EXPERIENCE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+{\section{\textbf{WORK EXPERIENCE}}}
+\href{https://nyapata.com/home}
+{\runsubsection{NyaPata.com} }\descript{ | Founder and Full Stack Developer
+\hfill \href{https://drive.google.com/file/d/1y61KUyWvvEHBHhbCeykhPJXUDv3h5mvK/preview}
+{\small [ \textcolor{BlueViolet}{\underline{Visit}} ]}
+}
+\location{March 2024 - Jan 2025 | Delhi, India}
+% Hacky fix for awkward extra vertical space
+\vspace{\topsep} 
+\begin{tightemize}
+\item Architected and developed a scalable, responsive MERN web app with Tailwind CSS , featuring code splitting, Terser inification, and lazy-loading
+
+ \item Enabled dynamic meta tags (Open Graph, Twitter Cards) for SEO and social preview support across CSR pages.
+
+\item Added Progressive Web App (PWA) features for offline access, faster mobile load, and installable experience.
+
+
+\item Integrated precise geolocation functionality using APIs, enabling users to directly input property coordinates
+
+ \item
+Created a property upload system with Google Drive API integration, allowing seamless media uploads with zero storage costs, achieving 100\% cost reduction
+
+\item 
+Developed dynamic filters and advanced search algorithms for location-based and criteria-specific property listings
+
+\item 
+Built an area-specific property management dashboard, leveraging geolocation for real-time insights
+ 
+ \item 
+Engineered secure authentication and authorization protocols using Google OAuth, JWT, and Passport.js
+
+ 
+\item Added Google Analytics for user insights; enforced code quality with ESLint and Prettier.
+
+\item URL :
+\texttt{\href{https://nyapata.com/home}
+{\textcolor{BlueViolet}{\underline{https://nyapata.com}} }
+}
+\end{tightemize}
+\sectionsep
+
+% \subsection{lilURL - URL Shortening Service}
+% Designed and implemented a URL shortening service "lilURL" in NodeJS.
+% \begin{tightemize}
+% \item API endpoints for squeezing a long URL in to short URLs.
+% \item API endpoints for converting the short URL to long URLs and redirecting it.
+% \end{tightemize}
+% \sectionsep
+
+\runsubsection{Carbon Crunch } \descript{
+|  MERN Developer Intern 
+\hfill \href{https://drive.google.com/file/d/1y61KUyWvvEHBHhbCeykhPJXUDv3h5mvK/preview}
+{\small [ \textcolor{BlueViolet}{\underline{Certificate}} ]}
+}
+
+\location{May 2024 - July 2024 | Delhi, India }
+
+
+
+\begin{tightemize}
+\item Built a comprehensive carbon emissions tracking dashboard using the MERN stack, improving the user experience and boosting retention by 75\%
+\item  Deployed features that contributed to a 50\% increase in product sales by enhancing tool usability and user engagement
+\item Collaborated with Python developers to integrate Optical Character Recognition (OCR) technology, automating data input from scanned documents and reducing manual processing time by 80\%.
+ \item Version available
+during the internship  : 
+\texttt{\href{https://carbonc.netlify.app/draft/001/home}
+{\textcolor{BlueViolet}{\underline{https://carbonc.netlify.com}} }
+}
+\end{tightemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     PROJECTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{-5pt}
+\sectionsep
+
+\section{Projects}
+\runsubsection{
+Scalable Video Chat App Backend 
+} \descript{
+\hfill \href{https://github.com/Praveen163/Omegle-Alternative}
+{\small [ \textcolor{BlueViolet}{\underline{GIT HUB}} ]}
+}
+Developed a omegle like backend server enabling real-time, anonymous Video Chat between users using WebSockets.
+
+\begin{tightemize}
+\item Developed backend (Node.js, Express, Socket.IO, Redis) with user pairing and rate limiting.
+\item Containerized the stack using Docker Compose for easy deployment.
+\item Implemented monitoring with Prometheus and Grafana, and structured logging with Winston/Morgan.
+
+% \item URL :
+% \texttt{\href{https://docver.netlify.app/}
+% {\textcolor{BlueViolet}{\underline{https://docver.netlify.app/}} }
+% }
+
+\end{tightemize}
+
+\sectionsep
+\runsubsection{
+NOTIFYDTU
+} \descript{
+\hfill \href{https://github.com/Praveen163/telebot}
+{\small [ \textcolor{BlueViolet}{\underline{GIT HUB}} ]}
+}
+Telegram bot using web scraping techniques to monitor college website updates in real-time, providing automated alerts to students
+\begin{tightemize}
+\item Technologies: Python, Telegram Bot API, BeautifulSoup, Requests
+
+\item URL :
+\texttt{\href{https://t.me/dtutoolsbot}
+{\textcolor{BlueViolet}{\underline{t.me/dtutoolsbot}} }
+}
+
+\end{tightemize}
+\sectionsep
+
+
+
+
+% \subsection{Process Scheduling}
+% The project was to design and implement preemptive dynamic priority scheduling algorithm to schedule jobs by the operating system. The source code was written in C language.
+% \sectionsep
+\sectionsep
+\sectionsep
+
+\sectionsep
+\sectionsep
+% \subsection{StackOverflow survey ’17}
+% Analyzed the StackOverflow public data of over 64,000 developers around the globe for the year 2017. Answered questions like:
+% \begin{tightemize}
+% \item How education may influence the salary?
+% \item What is the gender ratio of developers across the world?
+% \item What is the the rate of increase in salary with years of experience?
+% \item Does knowing more language implies more salary hike in IT sector?
+% \end{tightemize}
+% \sectionsep
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     AWARDS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Awards} 
+% \begin{tabular}{rll}
+% 2014	     & top 52/2500  & KPCB Engineering Fellow\\
+% 2014	     & 1\textsuperscript{st}/50  & Microsoft Coding Competition, Cornell\\
+% 2013	     & National  & Jump Trading Challenge Finalist\\
+% 2013     & 7\textsuperscript{th}/120 & CS 3410 Cache Race Bot Tournament  \\
+% 2012     & 2\textsuperscript{nd}/150 & CS 3110 Biannual Intra-Class Bot Tournament \\
+% 2011     & National & Indian National Mathematics Olympiad (INMO) Finalist \\
+% \end{tabular}
+
+% \newline
+% \textbf{\custombold{Ratings}}
+% \begin{tightemize}
+% \item Codeforces ratings: 1605, Expert
+% \item CodeChef ratings: 2041, 5-Stars
+% \end{tightemize}
+
+% \section{Achievements}
+
+% \runsubsection{ACM-ICPC 2019-20} \descript{| Team Name: Nuttywit}
+% Gwalior-Pune Regional Onsite Round: 85\(^{th}\) rank
+% \sectionsep
+% %\vspace{-5pt}
+
+% \subsection{Topcoder Collegiate Olympiad 2019 India Regionals}
+% Ranked 37\(^{th}\) in which overall 700+ best Indian programmers participated.
+% \sectionsep
+
+% \subsection{CodeChef
+% \space\space\space\space Highest Rating: 2041
+% \space\space\space\space (5-Star)}
+% COOK105A
+% \space\space\space\space Global Rank: 79
+% \space\space\space\space Country Rank: 41
+% \space\space\space\space College Rank: 1
+% \sectionsep
+
+% \subsection{Coding Contests}
+% \quad \quad\custombold{Informatica Code-a-Thon} : 33\(^{rd}\) rank out of 6, 310 participants.\\
+% \quad \quad\custombold{Code Apocalypse } : 1\(^{st}\) rank out of 175 teams at LPU \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     POSITION OF RESPONSIBILITY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\section{Positions of Responsibility}
+%\custombold{Team Leader} in Microsoft Hackathon Nov-2017  \\
+%\custombold{Class Representative} of my batch for 2016-2017\\
+
+\end{minipage} 
+\end{document}  \documentclass[]{article}
+
+
+
+\subsection{Document Verify App - DocVer}
+A blockchain based web app that lets an organization to verify documents..
+\begin{tightemize}
+\item Languages and Framework: Solidity, Etherjs, Hardhat, React.
+\item URL: \href{https://docver.netlify.app/}{\custombold{https://docver.netlify.app/}}
+\end{tightemize}
+
+
+Here’s a concise, pointwise project description for your resume, tailored to the SalesAgent project you shared:
+Sales Agent Automation Project (Python, OpenAI, Gemini, Agentic Tools)
+Developed an intelligent sales manager agent to automate the generation and delivery of cold sales emails for ComplAI.
+Integrated multiple AI-powered tools to generate diverse sales email drafts, ensuring high-quality and varied outreach.
+Implemented a decision logic for the agent to evaluate and select the best email draft from multiple generated options.
+Automated the email sending process by connecting the agent to an email delivery tool, reducing manual intervention.
+Enforced input guardrails to ensure compliance and prevent inappropriate content in generated emails.
+Utilized advanced language models (OpenAI, Gemini) for natural language understanding and generation.
+Designed the system for extensibility, allowing easy addition of new tools and models.
+Employed asynchronous programming and tracing for efficient, observable agent execution.
+You can tailor the stack/technologies (Python, OpenAI, Gemini, etc.) as per your actual implementation. Let me know if you want a shorter or more detailed version!
