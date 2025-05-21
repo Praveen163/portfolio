@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Praveen Kumar - Chat Assistant</title>
+  <!-- Tailwind CSS CDN with dark mode enabled -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'gpt-bg': '#23272f',
+            'gpt-sidebar': '#181a20',
+            'gpt-card': '#262b33',
+            'gpt-input': '#343842',
+            'gpt-accent': '#10a37f',
+            'gpt-muted': '#b3b8c5',
+            'gpt-border': '#2c313a',
+            'gpt-scroll': '#23272f',
+            'gpt-scroll-thumb': '#343842',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar {
+      width: 0px;
+      background: #23272f;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #343842;
+      border-radius: 8px;
+    }
+
+    .message {
+      font-size: 1.08rem;
+      line-height: 1.7;
+      word-break: break-word;
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .message {
+        font-size: 1rem;
+        margin-left: 0.3rem;
+        margin-right: 0.3rem;
+      }
+
+      #chat-window {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+      }
+    }
+
+    .message h1,
+    .message h2,
+    .message h3,
+    .message h4,
+    .message h5,
+    .message h6 {
+      color: #fff;
+      font-weight: 700;
+      margin: 1em 0 0.5em 0;
+      line-height: 1.3;
+    }
+
+    .message p {
+      margin: 0.5em 0;
+    }
+
+    .message ul,
+    .message ol {
+      margin: 0.5em 0 0.5em 1.5em;
+      padding-left: 1.5em;
+      color: #e0e4eb;
+    }
+
+    .message ul {
+      list-style-type: disc;
+    }
+
+    .message ol {
+      list-style-type: decimal;
+    }
+
+    .message li {
+      margin: 0.3em 0;
+      padding-left: 0.2em;
+      position: relative;
+    }
+
+    .message ul>li::marker {
+      color: #10a37f;
+      font-size: 1.1em;
+    }
+
+    .message ol>li::marker {
+      color: #10a37f;
+      font-size: 1.1em;
+      font-weight: bold;
+    }
+
+    .message a {
+      color: #10a37f;
+      text-decoration: underline;
+      word-break: break-all;
+      transition: color 0.2s;
+    }
+
+    .message a:hover {
+      color: #13d8a6;
+    }
+
+    .message code {
+      background: #23272f;
+      color: #10a37f;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-size: 0.98em;
+    }
+
+    .message pre {
+      background: #181a20;
+      color: #b3b8c5;
+      padding: 1em;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 0.7em 0;
+      font-size: 1em;
+      border-left: 4px solid #10a37f;
+    }
+
+    .message blockquote {
+      border-left: 4px solid #10a37f;
+      background: #23272f;
+      color: #b3b8c5;
+      margin: 0.7em 0;
+      padding: 0.5em 1em;
+      border-radius: 6px;
+      font-style: italic;
+    }
+
+    .message strong {
+      color: #fff;
+    }
+
+    .message em {
+      color: #b3b8c5;
+    }
+
+    /* Loader animation */
+    .dot-typing {
+      display: inline-block;
+      height: 1.2em;
+      line-height: 1.2em;
+      vertical-align: middle;
+    }
+
+    .dot-typing span {
+      display: inline-block;
+      width: 0.6em;
+      height: 0.6em;
+      margin: 0 0.1em;
+      background: #10a37f;
+      border-radius: 50%;
+      opacity: 0.7;
+      animation: dot-typing 1.2s infinite both;
+    }
+
+    .dot-typing span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .dot-typing span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes dot-typing {
+
+      0%,
+      80%,
+      100% {
+        transform: scale(0.7);
+        opacity: 0.5;
+      }
+
+      40% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+
+    /* Improved chat background */
+    #chat-window {
+      background: linear-gradient(135deg, #23272f 60%, #262b33 100%) !important;
+      background-size: cover;
+    }
+
+    /* Card Styles */
+    .card {
+      background: #262b33;
+      /* Dark mode card background */
+      color: #b3b8c5;
+      /* Light text color for contrast */
+      border: 1px solid #2c313a;
+      /* Dark mode border color */
+      max-width: 280px;
+      min-height: 200px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      /* Updated shadow */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      background: #262b33;
+      /* Match card background */
+      color: #b3b8c5;
+      /* Light text color for contrast */
+      padding: 0.8rem;
+      text-align: left;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .card-description {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    /* Add a class to hide elements */
+    .hidden {
+      display: none;
+    }
+
+    /* Style for the reset button icon */
+    .reset-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin-left: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reset-icon svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      fill: #10a37f;
+      transition: fill 0.2s;
+    }
+
+    .reset-icon:hover svg {
+      fill: #13d8a6;
+    }
+
+    .icon-container {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 0.5rem;
+    }
+
+    .icon-container a {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background-color: #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .icon-container a:hover {
+      transform: scale(1.2);
+    }
+
+    .icon-container a[title="Chat Idea"] {
+      background-color: #10a37f;
+      /* Use the project's green color */
+    }
+  </style>
+</head>
+
+<body class="dark bg-gpt-bg min-h-screen w-screen flex text-gpt-muted overflow-hidden">
+  <!-- Sidebar (responsive, collapsible) -->
+  <aside id="sidebar"
+    class="w-72 p-1 bg-gpt-sidebar flex flex-col border-r border-gpt-border h-screen fixed md:static z-30 transition-transform duration-300 md:translate-x-0 -translate-x-full md:flex md:w-72 md:h-screen md:relative md:top-0 md:left-0">
+    <div class="flex-1 flex flex-col overflow-y-auto">
+      <div class="flex flex-col items-center gap-2 mt-2 mb-4">
+        <div
+          class="w-12 h-12 rounded-full bg-gpt-accent flex items-center justify-center text-2xl font-bold text-white">P
+        </div>
+        <h2 class="text-base font-semibold text-white">Praveen Kumar</h2>
+        <span class="text-xs text-gpt-muted text-center">Software Developer Engineer</span>
+        <!-- Quick Links Icon Row -->
+        <div class="flex justify-center gap-3 mt-2 w-full" style="max-width: 180px; margin: 0 auto;">
+          <a href="https://www.linkedin.com/in/praveen-nnn" target="_blank"
+            class="rounded-full bg-white/10 p-2.5 transition flex items-center justify-center" title="LinkedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="#0A66C2" viewBox="0 0 24 24">
+              <path
+                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm15.5 11.268h-3v-5.604c0-1.337-.025-3.063-1.868-3.063-1.868 0-2.154 1.459-2.154 2.967v5.7h-3v-10h2.881v1.367h.041c.401-.761 1.381-1.563 2.845-1.563 3.043 0 3.604 2.004 3.604 4.609v5.587z" />
+            </svg>
+          </a>
+          <a href="mailto:praveen0nnn@gmail.com"
+            class="rounded-full bg-white/10 p-2.5 transition flex items-center justify-center" title="Email">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="#EA4335" viewBox="0 0 24 24">
+              <path d="M12 13.065l-11.99-7.065v14h24v-14l-12.01 7.065zm11.99-9.065h-23.98l11.99 7.065 11.99-7.065z" />
+            </svg>
+          </a>
+          <a href="tel:+918860508848" class="rounded-full bg-white/10 p-2.5 transition flex items-center justify-center"
+            title="Call">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="#25D366" viewBox="0 0 24 24">
+              <path
+                d="M20.487 17.14l-4.726-2.02a2.01 2.01 0 0 0-2.282.478l-1.02 1.04a15.054 15.054 0 0 1-6.6-6.6l1.04-1.02a2.01 2.01 0 0 0 .478-2.282l-2.02-4.726A2.01 2.01 0 0 0 2.01 2.01C1.13 2.89.87 4.13 1.29 5.22c2.13 5.47 6.31 9.65 11.78 11.78 1.09.42 2.33.16 3.21-.72a2.01 2.01 0 0 0-.793-3.138z" />
+            </svg>
+          </a>
+          <a href="https://instagram.com/ipraveengurjar" target="_blank"
+            class="rounded-full bg-white/10 p-2.5 transition flex items-center justify-center" title="Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24">
+              <defs>
+                <linearGradient id="insta-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#f58529" />
+                  <stop offset="50%" stop-color="#dd2a7b" />
+                  <stop offset="100%" stop-color="#515bd4" />
+                </linearGradient>
+              </defs>
+              <rect width="20" height="20" x="2" y="2" rx="5" fill="none" stroke="url(#insta-gradient)"
+                stroke-width="2" />
+              <circle cx="12" cy="12" r="5" fill="none" stroke="url(#insta-gradient)" stroke-width="2" />
+              <circle cx="17" cy="7" r="1.5" fill="#dd2a7b" />
+            </svg>
+          </a>
+        </div>
+      </div>
+      <nav class="flex-1 flex flex-col gap-2 overflow-visible">
+        <div class="mt-4 flex-1 flex flex-col gap-6 pr-1">
+          <!-- Education Timeline -->
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gpt-accent text-white"><svg
+                  xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24'
+                  stroke='currentColor'>
+                  <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
+                    d='M12 14l9-5-9-5-9 5 9 5zm0 7v-7' />
+                </svg></span>
+              <span class="text-base font-bold text-white">Education</span>
+            </div>
+            <ol class="relative border-l-2 border-gpt-accent ml-3">
+              <li class="mb-6 ml-4 group">
+                <div class="absolute -left-3.5 top-2 w-3 h-3 bg-gpt-accent rounded-full border-2 border-gpt-card"></div>
+                <button
+                  class="resume-item w-full text-left bg-gpt-card group-hover:bg-gpt-input transition rounded-xl px-4 py-3 shadow flex flex-col gap-1 cursor-pointer">
+                  <span class="text-[1.08em] font-semibold text-white">Delhi Technological University (formerly
+                    DCE)</span>
+                  <span class="text-xs text-gpt-muted">B.Tech Electronics & Communication • Grad. June 2025</span>
+                  <span class="text-xs text-gpt-muted">Delhi, India</span>
+                </button>
+                <button
+                  class="mt-2 bg-gpt-accent hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs transition"
+                  onclick="document.getElementById('chat-input').value = 'Tell me more about your education at Delhi Technological University.'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));">Ask
+                  about this</button>
+              </li>
+              <li class="ml-4 group">
+                <div class="absolute -left-3.5 top-2 w-3 h-3 bg-gpt-accent rounded-full border-2 border-gpt-card"></div>
+                <button
+                  class="resume-item w-full text-left bg-gpt-card group-hover:bg-gpt-input transition rounded-xl px-4 py-3 shadow flex flex-col gap-1 cursor-pointer">
+                  <span class="text-[1.08em] font-semibold text-white">Kendriya Vidyalaya No. II</span>
+                  <span class="text-xs text-gpt-muted">Graduated July 2021</span>
+                  <span class="text-xs text-gpt-muted">Delhi, India</span>
+                </button>
+                <button
+                  class="mt-2 bg-gpt-accent hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs transition"
+                  onclick="document.getElementById('chat-input').value = 'Tell me more about your schooling at Kendriya Vidyalaya.'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));">Ask
+                  about this</button>
+              </li>
+            </ol>
+          </div>
+          <!-- Experience Timeline -->
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gpt-accent text-white"><svg
+                  xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24'
+                  stroke='currentColor'>
+                  <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
+                    d='M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m-6 0h6' />
+                </svg></span>
+              <span class="text-base font-bold text-white">Experience</span>
+            </div>
+            <ol class="relative border-l-2 border-gpt-accent ml-3">
+              <li class="mb-6 ml-4 group">
+                <div class="absolute -left-3.5 top-2 w-3 h-3 bg-gpt-accent rounded-full border-2 border-gpt-card"></div>
+                <button
+                  class="resume-item w-full text-left bg-gpt-card group-hover:bg-gpt-input transition rounded-xl px-4 py-3 shadow flex flex-col gap-1 cursor-pointer">
+                  <span class="text-[1.08em] font-semibold text-white">Nyapata.com</span>
+                  <span class="text-xs text-gpt-muted">Founder, Full Stack Developer</span>
+                  <span class="text-xs text-gpt-muted">Mar 2024 - Jan 2025 • Delhi, India</span>
+                </button>
+                <button
+                  class="mt-2 bg-gpt-accent hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs transition"
+                  onclick="document.getElementById('chat-input').value = 'Tell me more about your role at Nyapata.com.'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));">Ask
+                  about this</button>
+              </li>
+              <li class="ml-4 group">
+                <div class="absolute -left-3.5 top-2 w-3 h-3 bg-gpt-accent rounded-full border-2 border-gpt-card"></div>
+                <button
+                  class="resume-item w-full text-left bg-gpt-card group-hover:bg-gpt-input transition rounded-xl px-4 py-3 shadow flex flex-col gap-1 cursor-pointer">
+                  <span class="text-[1.08em] font-semibold text-white">Carbon Crunch</span>
+                  <span class="text-xs text-gpt-muted">MERN Developer Intern</span>
+                  <span class="text-xs text-gpt-muted">May 2024 - July 2024 • Delhi, India</span>
+                </button>
+                <button
+                  class="mt-2 bg-gpt-accent hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs transition"
+                  onclick="document.getElementById('chat-input').value = 'Tell me more about your internship at Carbon Crunch.'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));">Ask
+                  about this</button>
+              </li>
+            </ol>
+          </div>
+          <!-- Projects Timeline -->
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gpt-accent text-white"><svg
+                  xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24'
+                  stroke='currentColor'>
+                  <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
+                    d='M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z' />
+                </svg></span>
+              <span class="text-base font-bold text-white">Projects</span>
+            </div>
+            <ol class="relative border-l-2 border-gpt-accent ml-3">
+              <li class="mb-6 ml-4 group">
+                <div class="absolute -left-3.5 top-2 w-3 h-3 bg-gpt-accent rounded-full border-2 border-gpt-card"></div>
+                <button
+                  class="resume-item w-full text-left bg-gpt-card group-hover:bg-gpt-input transition rounded-xl px-4 py-3 shadow flex flex-col gap-1 cursor-pointer">
+                  <span class="text-[1.08em] font-semibold text-white">Scalable Video Chat App Backend</span>
+                  <span class="text-xs text-gpt-muted">Node.js, Express, Socket.IO, Redis, Docker</span>
+                </button>
+                <button
+                  class="mt-2 bg-gpt-accent hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs transition"
+                  onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the Scalable Video Chat App Backend project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));">Ask
+                  about this</button>
+              </li>
+              <li class="mb-6 ml-4 group">
+                <div class="absolute -left-3.5 top-2 w-3 h-3 bg-gpt-accent rounded-full border-2 border-gpt-card"></div>
+                <button
+                  class="resume-item w-full text-left bg-gpt-card group-hover:bg-gpt-input transition rounded-xl px-4 py-3 shadow flex flex-col gap-1 cursor-pointer">
+                  <span class="text-[1.08em] font-semibold text-white">NotifyDTU</span>
+                  <span class="text-xs text-gpt-muted">Python, Telegram Bot, Web Scraping</span>
+                </button>
+                <button
+                  class="mt-2 bg-gpt-accent hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs transition"
+                  onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the NotifyDTU project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));">Ask
+                  about this</button>
+              </li>
+              <li class="mb-6 ml-4 group">
+                <div class="absolute -left-3.5 top-2 w-3 h-3 bg-gpt-accent rounded-full border-2 border-gpt-card"></div>
+                <button
+                  class="resume-item w-full text-left bg-gpt-card group-hover:bg-gpt-input transition rounded-xl px-4 py-3 shadow flex flex-col gap-1 cursor-pointer">
+                  <span class="text-[1.08em] font-semibold text-white">Sales AI Agent</span>
+                  <span class="text-xs text-gpt-muted">Python, OpenAI SDK, Gemini</span>
+                </button>
+                <button
+                  class="mt-2 bg-gpt-accent hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs transition"
+                  onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the Sales AI Agent project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));">Ask
+                  about this</button>
+              </li>
+              <li class="ml-4 group">
+                <div class="absolute -left-3.5 top-2 w-3 h-3 bg-gpt-accent rounded-full border-2 border-gpt-card"></div>
+                <button
+                  class="resume-item w-full text-left bg-gpt-card group-hover:bg-gpt-input transition rounded-xl px-4 py-3 shadow flex flex-col gap-1 cursor-pointer">
+                  <span class="text-[1.08em] font-semibold text-white">Financial Research Agent</span>
+                  <span class="text-xs text-gpt-muted">Python, Crew AI, Gemini</span>
+                </button>
+                <button
+                  class="mt-2 bg-gpt-accent hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs transition"
+                  onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the Financial Research Agent project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));">Ask
+                  about this</button>
+              </li>
+            </ol>
+          </div>
+        </div>
+        <!-- Coursework, Skills, Programming -->
+        <div class="mt-6 flex flex-col gap-6">
+          <!-- Coursework Timeline -->
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gpt-accent text-white"><svg
+                  xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24'
+                  stroke='currentColor'>
+                  <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
+                    d='M9 12h6m2 0a2 2 0 11-4 0 2 2 0 014 0z' />
+                </svg></span>
+              <span class="text-base font-bold text-white">Coursework</span>
+            </div>
+            <ol class="relative border-l-2 border-gpt-accent ml-3">
+              <li class="mb-4 ml-4">
+                <div class="absolute -left-3.5 top-2 w-3 h-3 bg-gpt-accent rounded-full border-2 border-gpt-card"></div>
+                <div class="flex flex-wrap gap-2">
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Data Structures</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Algorithm Design</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Object Oriented Software
+                    Eng</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Software Engineering</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Fundamentals of IT</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Python Programming</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Theory of Computation</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Digital Electronics</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Computer Architecture</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Soft Computing</span>
+                </div>
+              </li>
+            </ol>
+          </div>
+          <!-- Skills Timeline -->
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gpt-accent text-white"><svg
+                  xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24'
+                  stroke='currentColor'>
+                  <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M16 7a4 4 0 01-8 0' />
+                </svg></span>
+              <span class="text-base font-bold text-white">Skills</span>
+            </div>
+            <ol class="relative border-l-2 border-gpt-accent ml-3">
+              <li class="mb-4 ml-4">
+                <div class="absolute -left-3.5 top-2 w-3 h-3 bg-gpt-accent rounded-full border-2 border-gpt-card"></div>
+                <div class="flex flex-wrap gap-2">
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Data Structures</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Algorithm Optimization</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Analytical Problem-Solving</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">System Design</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Frontend Development</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Backend Development</span>
+                </div>
+              </li>
+            </ol>
+          </div>
+          <!-- Programming Timeline -->
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gpt-accent text-white"><svg
+                  xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24'
+                  stroke='currentColor'>
+                  <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
+                    d='M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2' />
+                </svg></span>
+              <span class="text-base font-bold text-white">Programming</span>
+            </div>
+            <ol class="relative border-l-2 border-gpt-accent ml-3">
+              <li class="mb-4 ml-4">
+                <div class="absolute -left-3.5 top-2 w-3 h-3 bg-gpt-accent rounded-full border-2 border-gpt-card"></div>
+                <div class="flex flex-wrap gap-2">
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Python</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">JavaScript</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">C++</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">C</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Solidity</span>
+                  <span class="bg-gpt-input rounded px-2 py-1 text-xs text-gpt-muted">Assembly Language</span>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div class="mt-auto text-xs text-gpt-muted text-center pt-4 border-t border-gpt-border">&copy; 2024 Praveen Kumar
+    </div>
+  </aside>
+  <!-- Overlay for sidebar on mobile -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-40 z-20 hidden md:hidden"
+    onclick="document.getElementById('sidebar').classList.add('-translate-x-full'); this.classList.add('hidden');">
+  </div>
+  <!-- Main Chat Area -->
+  <main class="flex-1 flex flex-col h-screen bg-gpt-bg md:ml-0 ml-0 md:pl-0 pl-0">
+    <!-- Top Bar -->
+    <div class="flex items-center justify-between px-4 md:px-8 py-4 border-b border-gpt-border bg-gpt-bg/80 sticky top-0 z-10 backdrop-blur">
+      <!-- Left Section -->
+      <div class="flex items-center gap-4">
+        <!-- Hamburger for mobile -->
+        <button id="sidebar-toggle" class="md:hidden text-white focus:outline-none" 
+          onclick="document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('sidebar-overlay').classList.remove('hidden');">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <!-- Text visible only on medium and up -->
+        <div class="text-lg font-semibold text-white tracking-wide hidden md:block">Hello!</div>
+      </div>
+    
+      <!-- Right Section -->
+      <div class="flex items-center gap-3 flex-wrap">
+        <!-- Resume Links: Icons on mobile, full text on md+ -->
+        <a href="https://drive.google.com/file/d/1H6O6wNw-yGaCk7g2rK2P_5k36HdfR7hE/preview" target="_blank"
+          class="bg-white/10 hover:bg-white/20 text-white px-2 py-2 rounded-lg font-medium shadow transition text-sm md:text-base flex items-center justify-center">
+          <!-- Icon for mobile -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block md:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4zM2 12a10 10 0 0120 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+          </svg>
+          <span class="hidden md:inline">Full Stack Resume</span>
+        </a>
+    
+        <a href="https://drive.google.com/file/d/1dH5SP7uIhSgrR1qajl-0uR2BEnraNvCd/preview" target="_blank"
+          class="bg-white/10 hover:bg-white/20 text-white px-2 py-2 rounded-lg font-medium shadow transition text-sm md:text-base flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block md:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4zM2 12a10 10 0 0120 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+          </svg>
+          <span class="hidden md:inline">Agentic AI Resume</span>
+        </a>
+    
+        <!-- Hire Me Button -->
+        <a href="mailto:praveen0nnn@gmail.com"
+          class="bg-gpt-accent hover:bg-emerald-600 text-white px-3 py-2 rounded-lg font-semibold shadow transition text-sm md:text-base">
+          Hire Me
+        </a>
+      </div>
+    </div>
+    
+
+    <!-- Chat Area -->
+    <div class=" flex-1 flex flex-col justify-end relative overflow-hidden">
+      <div id="chat-window"
+        class="flex-1 overflow-y-auto flex flex-col gap-6 bg-gpt-card/80 scrollbar-hidden scrollbar-thin scrollbar-thumb-gpt-scroll-thumb scrollbar-track-gpt-scroll px-2 md:px-8"
+        style="box-sizing: border-box;">
+        <div id="chat-windoww">    </div>
+
+        <div id="card-container" class="card-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-5xl mx-auto px-2 md:px-6">
+          <!-- Card 1 -->
+          <div class="card">
+            <div class="relative">
+              <img src="../protfol/OmgleClone.png" alt="Video Chat App">
+            </div>
+            <div class="card-content">
+              <div class="flex justify-between items-center">
+                <h3 class="card-title">Scalable Video Chat App Backend</h3>
+                <div class="icon-container">
+                  <a href="https://github.com/Praveen163/Omegle-Alternative" title="GitHub">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#181717"
+                        d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577v-2.17c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.997.108-.775.42-1.305.763-1.605-2.665-.3-5.467-1.332-5.467-5.93 0-1.31.467-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.957-.266 1.983-.4 3.003-.405 1.02.005 2.047.14 3.006.405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.823 1.096.823 2.21v3.285c0 .32.218.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z" />
+                    </svg>
+                  </a>
+                 
+                  <a  title="Chat Idea" onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the Scalable Video Chat App Backend project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="#FF4500"
+    d="M12 3C7.03 3 3 6.48 3 10.5c0 2.04 1.02 3.88 2.7 5.19-.1.39-.3 1.02-.4 1.41-.1.39.3.78.7.59.4-.2 1.5-.7 1.9-.9.5.1 1.1.2 1.7.2 4.97 0 9-3.48 9-7.5S16.97 3 12 3zm0 13c-.6 0-1.2-.1-1.7-.2-.4.2-1.5.7-1.9.9-.4.2-.8-.2-.7-.6.1-.4.3-1.02.4-1.41C4.02 14.38 3 12.54 3 10.5 3 6.48 7.03 3 12 3s9 3.48 9 7.5-4.03 7.5-9 7.5z" />
+</svg></a>
+                </div>
+              </div>
+              <p class="card-description">A high-performance backend for real-time video chat applications.</p>
+            </div>
+          </div>
+          <!-- Card 6 -->
+          <div class="card">
+            <div class="relative">
+              <img src="../protfol/NyapataHome.png" alt="Nyapata.com">
+            </div>
+            <div class="card-content">
+              <div class="flex justify-between items-center">
+                <h3 class="card-title">Nyapata.com</h3>
+                <div class="icon-container">
+                  
+                  <a href="https://nyapata.com/home" title="Live URL">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#0A66C2"
+                        d="M10.59 13.41L9.17 12l4.24-4.24c.39-.39 1.02-.39 1.41 0l4.24 4.24-1.41 1.41L15 10.83V21h-2V10.83l-2.41 2.58zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                    </svg>
+                  </a>
+                  <a href="#" title="Chat Idea" onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the Nyapata.com project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="#FF4500"
+    d="M12 3C7.03 3 3 6.48 3 10.5c0 2.04 1.02 3.88 2.7 5.19-.1.39-.3 1.02-.4 1.41-.1.39.3.78.7.59.4-.2 1.5-.7 1.9-.9.5.1 1.1.2 1.7.2 4.97 0 9-3.48 9-7.5S16.97 3 12 3zm0 13c-.6 0-1.2-.1-1.7-.2-.4.2-1.5.7-1.9.9-.4.2-.8-.2-.7-.6.1-.4.3-1.02.4-1.41C4.02 14.38 3 12.54 3 10.5 3 6.48 7.03 3 12 3s9 3.48 9 7.5-4.03 7.5-9 7.5z" />
+</svg></a>
+                </div>
+              </div>
+              <p class="card-description">A platform for property listings with advanced search features.</p>
+            </div>
+          </div>
+
+          <!-- Card 8 -->
+          <div class="card">
+            <div class="relative">
+              <img src="../protfol/SalesAgent.png" alt="SalesAgent">
+            </div>
+            <div class="card-content">
+              <div class="flex justify-between items-center">
+                <h3 class="card-title">SalesAgent (Agentic AI)</h3>
+                <div class="icon-container">
+                  <a href="https://github.com/Praveen163/SalesAgent" title="GitHub">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#181717"
+                        d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577v-2.17c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.997.108-.775.42-1.305.763-1.605-2.665-.3-5.467-1.332-5.467-5.93 0-1.31.467-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.957-.266 1.983-.4 3.003-.405 1.02.005 2.047.14 3.006.405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.823 1.096.823 2.21v3.285c0 .32.218.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z" />
+                    </svg>
+                  </a>
+                  
+                  <a href="#" title="Chat Idea" onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the SalesAgent (Agentic AI) project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="#FF4500"
+    d="M12 3C7.03 3 3 6.48 3 10.5c0 2.04 1.02 3.88 2.7 5.19-.1.39-.3 1.02-.4 1.41-.1.39.3.78.7.59.4-.2 1.5-.7 1.9-.9.5.1 1.1.2 1.7.2 4.97 0 9-3.48 9-7.5S16.97 3 12 3zm0 13c-.6 0-1.2-.1-1.7-.2-.4.2-1.5.7-1.9.9-.4.2-.8-.2-.7-.6.1-.4.3-1.02.4-1.41C4.02 14.38 3 12.54 3 10.5 3 6.48 7.03 3 12 3s9 3.48 9 7.5-4.03 7.5-9 7.5z" />
+</svg></a>
+                </div>
+              </div>
+              <p class="card-description">Agentic AI SalesAgent built with OpenAI SDK for autonomous sales workflows.</p>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="card">
+            <div class="relative">
+              <img src="../protfol/DTUnotify.png" alt="NotifyDTU">
+            </div>
+            <div class="card-content">
+              <div class="flex justify-between items-center">
+                <h3 class="card-title">NotifyDTU</h3>
+                <div class="icon-container">
+                  <a href="https://github.com/Praveen163/telebot" title="GitHub">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#181717"
+                        d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577v-2.17c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.997.108-.775.42-1.305.763-1.605-2.665-.3-5.467-1.332-5.467-5.93 0-1.31.467-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.957-.266 1.983-.4 3.003-.405 1.02.005 2.047.14 3.006.405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.823 1.096.823 2.21v3.285c0 .32.218.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z" />
+                    </svg>
+                  </a>
+                  <a href="https://t.me/dtutoolsbot" title="Live URL">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#0A66C2"
+                        d="M10.59 13.41L9.17 12l4.24-4.24c.39-.39 1.02-.39 1.41 0l4.24 4.24-1.41 1.41L15 10.83V21h-2V10.83l-2.41 2.58zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                    </svg>
+                  </a>
+                  <a href="#" title="Chat Idea" onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the NotifyDTU project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="#FF4500"
+    d="M12 3C7.03 3 3 6.48 3 10.5c0 2.04 1.02 3.88 2.7 5.19-.1.39-.3 1.02-.4 1.41-.1.39.3.78.7.59.4-.2 1.5-.7 1.9-.9.5.1 1.1.2 1.7.2 4.97 0 9-3.48 9-7.5S16.97 3 12 3zm0 13c-.6 0-1.2-.1-1.7-.2-.4.2-1.5.7-1.9.9-.4.2-.8-.2-.7-.6.1-.4.3-1.02.4-1.41C4.02 14.38 3 12.54 3 10.5 3 6.48 7.03 3 12 3s9 3.48 9 7.5-4.03 7.5-9 7.5z" />
+</svg></a>
+                </div>
+              </div>
+              <p class="card-description">Automated notifications for university updates via Telegram.</p>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="card">
+            <div class="relative">
+              <img src="../protfol/docver.png" alt="DocVer">
+            </div>
+            <div class="card-content">
+              <div class="flex justify-between items-center">
+                <h3 class="card-title">DocVer</h3>
+                <div class="icon-container">
+                  <a href="https://github.com/Praveen163/blockchainproject/tree/main/Blockchain" title="GitHub">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#181717"
+                        d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577v-2.17c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.997.108-.775.42-1.305.763-1.605-2.665-.3-5.467-1.332-5.467-5.93 0-1.31.467-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.957-.266 1.983-.4 3.003-.405 1.02.005 2.047.14 3.006.405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.823 1.096.823 2.21v3.285c0 .32.218.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z" />
+                    </svg>
+                  </a>
+                  <a href="https://docver.netlify.app/" title="Live URL">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#0A66C2"
+                        d="M10.59 13.41L9.17 12l4.24-4.24c.39-.39 1.02-.39 1.41 0l4.24 4.24-1.41 1.41L15 10.83V21h-2V10.83l-2.41 2.58zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                    </svg>
+                  </a>
+                  <a href="#" title="Chat Idea" onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the DocVer project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="#FF4500"
+    d="M12 3C7.03 3 3 6.48 3 10.5c0 2.04 1.02 3.88 2.7 5.19-.1.39-.3 1.02-.4 1.41-.1.39.3.78.7.59.4-.2 1.5-.7 1.9-.9.5.1 1.1.2 1.7.2 4.97 0 9-3.48 9-7.5S16.97 3 12 3zm0 13c-.6 0-1.2-.1-1.7-.2-.4.2-1.5.7-1.9.9-.4.2-.8-.2-.7-.6.1-.4.3-1.02.4-1.41C4.02 14.38 3 12.54 3 10.5 3 6.48 7.03 3 12 3s9 3.48 9 7.5-4.03 7.5-9 7.5z" />
+</svg></a>
+                </div>
+              </div>
+              <p class="card-description">Secure document verification system using blockchain technology.</p>
+            </div>
+          </div>
+          <!-- Card 4 -->
+          <div class="card">
+            <div class="relative">
+              <img src="../protfol/NyaptaMaps.png" alt="Nyapata Map">
+            </div>
+            <div class="card-content">
+              <div class="flex justify-between items-center">
+                <h3 class="card-title">Nyapata Map</h3>
+                <div class="icon-container">
+                  
+                  <a href="https://nyapata.com/property/maps" title="Live URL">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#0A66C2"
+                        d="M10.59 13.41L9.17 12l4.24-4.24c.39-.39 1.02-.39 1.41 0l4.24 4.24-1.41 1.41L15 10.83V21h-2V10.83l-2.41 2.58zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                    </svg>
+                  </a>
+                  <a href="#" title="Chat Idea" onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the Nyapata Map project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="#FF4500"
+    d="M12 3C7.03 3 3 6.48 3 10.5c0 2.04 1.02 3.88 2.7 5.19-.1.39-.3 1.02-.4 1.41-.1.39.3.78.7.59.4-.2 1.5-.7 1.9-.9.5.1 1.1.2 1.7.2 4.97 0 9-3.48 9-7.5S16.97 3 12 3zm0 13c-.6 0-1.2-.1-1.7-.2-.4.2-1.5.7-1.9.9-.4.2-.8-.2-.7-.6.1-.4.3-1.02.4-1.41C4.02 14.38 3 12.54 3 10.5 3 6.48 7.03 3 12 3s9 3.48 9 7.5-4.03 7.5-9 7.5z" />
+</svg></a>
+                </div>
+              </div>
+              <p class="card-description">Interactive property mapping with advanced search filters.</p>
+            </div>
+          </div>
+          <!-- Card 5 -->
+          <div class="card">
+            <div class="relative">
+              <img src="../protfol/NyapataDashBoard.png" alt="Nyapata Dashboard">
+            </div>
+            <div class="card-content">
+              <div class="flex justify-between items-center">
+                <h3 class="card-title">Nyapata Dashboard</h3>
+                <div class="icon-container">
+                  
+                  <a href="https://nyapata.com/home" title="Live URL">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#0A66C2"
+                        d="M10.59 13.41L9.17 12l4.24-4.24c.39-.39 1.02-.39 1.41 0l4.24 4.24-1.41 1.41L15 10.83V21h-2V10.83l-2.41 2.58zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                    </svg>
+                  </a>
+                  <a href="#" title="Chat Idea" onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the Nyapata Dashboard project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="#FF4500"
+    d="M12 3C7.03 3 3 6.48 3 10.5c0 2.04 1.02 3.88 2.7 5.19-.1.39-.3 1.02-.4 1.41-.1.39.3.78.7.59.4-.2 1.5-.7 1.9-.9.5.1 1.1.2 1.7.2 4.97 0 9-3.48 9-7.5S16.97 3 12 3zm0 13c-.6 0-1.2-.1-1.7-.2-.4.2-1.5.7-1.9.9-.4.2-.8-.2-.7-.6.1-.4.3-1.02.4-1.41C4.02 14.38 3 12.54 3 10.5 3 6.48 7.03 3 12 3s9 3.48 9 7.5-4.03 7.5-9 7.5z" />
+</svg></a>
+                </div>
+              </div>
+              <p class="card-description">Comprehensive analytics dashboard for property management.</p>
+            </div>
+          </div>
+          
+          <!-- Card 7 -->
+          <div class="card">
+            <div class="relative">
+              <img src="../protfol/carboncrunch.png" alt="Carbon Crunch">
+            </div>
+            <div class="card-content">
+              <div class="flex justify-between items-center">
+                <h3 class="card-title">Carbon Crunch</h3>
+                <div class="icon-container">
+                  <a href="https://drive.google.com/file/d/1y61KUyWvvEHBHhbCeykhPJXUDv3h5mvK/preview" title="GitHub">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#181717"
+                        d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577v-2.17c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.997.108-.775.42-1.305.763-1.605-2.665-.3-5.467-1.332-5.467-5.93 0-1.31.467-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.957-.266 1.983-.4 3.003-.405 1.02.005 2.047.14 3.006.405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.823 1.096.823 2.21v3.285c0 .32.218.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z" />
+                    </svg>
+                  </a>
+                  <a href="https://carbonc.netlify.app/draft/001/home" title="Live URL">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#0A66C2"
+                        d="M10.59 13.41L9.17 12l4.24-4.24c.39-.39 1.02-.39 1.41 0l4.24 4.24-1.41 1.41L15 10.83V21h-2V10.83l-2.41 2.58zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                    </svg>
+                  </a>
+                  <a href="#" title="Chat Idea" onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the Carbon Crunch project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="#FF4500"
+    d="M12 3C7.03 3 3 6.48 3 10.5c0 2.04 1.02 3.88 2.7 5.19-.1.39-.3 1.02-.4 1.41-.1.39.3.78.7.59.4-.2 1.5-.7 1.9-.9.5.1 1.1.2 1.7.2 4.97 0 9-3.48 9-7.5S16.97 3 12 3zm0 13c-.6 0-1.2-.1-1.7-.2-.4.2-1.5.7-1.9.9-.4.2-.8-.2-.7-.6.1-.4.3-1.02.4-1.41C4.02 14.38 3 12.54 3 10.5 3 6.48 7.03 3 12 3s9 3.48 9 7.5-4.03 7.5-9 7.5z" />
+</svg></a>
+                </div>
+              </div>
+              <p class="card-description">Developed features for a sustainability-focused application.</p>
+            </div>
+          </div>
+          
+          <!-- Card 9 -->
+          <div class="card">
+            <div class="relative">
+              <img src="../protfol/FinanceAgent.png" alt="Finance Research Agent">
+            </div>
+            <div class="card-content">
+              <div class="flex justify-between items-center">
+                <h3 class="card-title">Finance Research Agent (Agentic AI)</h3>
+                <div class="icon-container">
+                  <a href="https://github.com/Praveen163/financeagent" title="GitHub">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="#181717"
+                        d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577v-2.17c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.997.108-.775.42-1.305.763-1.605-2.665-.3-5.467-1.332-5.467-5.93 0-1.31.467-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.957-.266 1.983-.4 3.003-.405 1.02.005 2.047.14 3.006.405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.823 1.096.823 2.21v3.285c0 .32.218.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z" />
+                    </svg>
+                  </a>
+                  
+                  <a href="#" title="Chat Idea" onclick="document.getElementById('chat-input').value = 'Can you provide a detailed overview of the Finance Research Agent (Agentic AI) project, including the tools used, features added, and any system design concepts implemented?'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="#FF4500"
+    d="M12 3C7.03 3 3 6.48 3 10.5c0 2.04 1.02 3.88 2.7 5.19-.1.39-.3 1.02-.4 1.41-.1.39.3.78.7.59.4-.2 1.5-.7 1.9-.9.5.1 1.1.2 1.7.2 4.97 0 9-3.48 9-7.5S16.97 3 12 3zm0 13c-.6 0-1.2-.1-1.7-.2-.4.2-1.5.7-1.9.9-.4.2-.8-.2-.7-.6.1-.4.3-1.02.4-1.41C4.02 14.38 3 12.54 3 10.5 3 6.48 7.03 3 12 3s9 3.48 9 7.5-4.03 7.5-9 7.5z" />
+</svg></a>
+                </div>
+              </div>
+              <p class="card-description">Agentic AI Finance Research Agent using Gemini and CrewAI for financial data analysis and research automation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <!-- Chat Input Bar -->
+      <form id="chat-form" autocomplete="off"
+        class="absolute  bottom-0 left-0 w-full flex gap-2 px-4 md:px-8 py-4 md:py-5 bg-gpt-bg/90 border-t border-gpt-border z-10">
+        <div class="flex-1 flex items-center bg-gpt-input rounded-xl shadow px-2 md:px-4 py-2">
+            <input type="text" id="chat-input" placeholder="Ask anything about myself, my projects, experience, and skills" required
+            class="flex-1 bg-transparent border-none outline-none text-white placeholder-gpt-muted text-base px-2" />
+        </div>
+        <button type="submit"
+          class="bg-gpt-accent text-white px-4 md:px-8 py-2 md:py-3 rounded-xl font-semibold shadow hover:bg-emerald-600 transition text-sm md:text-base">Send</button>
+      </form>
+      <div class=" h-24"></div>
+
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="chat.js"></script>
+  <script>
+    // Sidebar toggle for mobile
+    document.addEventListener('DOMContentLoaded', function () {
+      var sidebar = document.getElementById('sidebar');
+      var overlay = document.getElementById('sidebar-overlay');
+      overlay.onclick = function () {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      };
+      document.getElementById('sidebar-toggle').onclick = function (e) {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      };
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var cardContainer = document.querySelector('.card-container');
+      var chatForm = document.getElementById('chat-form');
+      var chatInput = document.getElementById('chat-input');
+      var chatWindow = document.getElementById('chat-window');
+
+      // Check if reset button already exists
+      
+      // Hide cards when chat starts
+      chatForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent form submission
+        cardContainer.classList.add('hidden');
+        // Add logic to handle sending the chat message here
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // ... existing code ...
+      var chatIdeaLinks = document.querySelectorAll('.icon-container a[title="Chat Idea"]');
+      chatIdeaLinks.forEach(function (link) {
+        link.addEventListener('click', function (event) {
+          event.preventDefault();
+          var cardTitle = this.closest('.card-content').querySelector('.card-title').textContent;
+          var chatInput = document.getElementById('chat-input');
+          chatInput.value = `Can you provide a detailed overview of the ${cardTitle} project, including the tools used, features added, and any system design concepts implemented?`;
+          chatInput.focus();
+          setTimeout(function () {
+            document.getElementById('chat-form').submit();
+          }, 100); // Delay to ensure input is focused and value is set
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

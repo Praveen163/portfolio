@@ -1,0 +1,112 @@
+body {
+    background: linear-gradient(135deg, #ece9f7 0%, #d1e7fa 100%);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.chat-container {
+    max-width: 420px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 6px 32px rgba(60, 60, 120, 0.12);
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    overflow: hidden;
+}
+
+header {
+    background: #3a7bd5;
+    color: #fff;
+    padding: 18px 0 12px 0;
+    text-align: center;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.chat-window {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #f7f9fb;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.message {
+    max-width: 80%;
+    padding: 12px 18px;
+    border-radius: 18px;
+    font-size: 1rem;
+    line-height: 1.5;
+    word-break: break-word;
+    box-shadow: 0 2px 8px rgba(60, 60, 120, 0.04);
+    margin-bottom: 2px;
+}
+
+.message.user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #3a7bd5 60%, #00d2ff 100%);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.message.bot {
+    align-self: flex-start;
+    background: #e9f1fb;
+    color: #222;
+    border-bottom-left-radius: 4px;
+}
+
+#chat-form {
+    display: flex;
+    padding: 16px;
+    background: #f0f4fa;
+    border-top: 1px solid #e0e6ef;
+}
+
+#chat-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #c3d0e6;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    margin-right: 10px;
+    background: #fff;
+    transition: border 0.2s;
+}
+
+#chat-input:focus {
+    border: 1.5px solid #3a7bd5;
+}
+
+#chat-form button {
+    background: linear-gradient(135deg, #3a7bd5 60%, #00d2ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0 22px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#chat-form button:hover {
+    background: linear-gradient(135deg, #00d2ff 60%, #3a7bd5 100%);
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    background: #f0f4fa;
+}
+::-webkit-scrollbar-thumb {
+    background: #d1e7fa;
+    border-radius: 8px;
+} 
