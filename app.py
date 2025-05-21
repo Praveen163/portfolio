@@ -4,7 +4,7 @@ from pypdf import PdfReader
 # --- Add Flask imports ---
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
-
+import os
 
 load_dotenv(override=True)
 
@@ -64,11 +64,5 @@ def index():
     return send_file('static/index.html')
 
 if __name__ == "__main__":
-    # Uncomment one of the following lines depending on which interface you want to run:
-    # 1. For Gradio (default UI):
-    # me = Me()
-    # gr.ChatInterface(me.chat, type="messages").launch()
-
-    # 2. For Flask API (custom HTML/JS frontend):
-    app.run(port=5000)
-    
+    port = int(os.environ.get('PORT', 10000))  # Default to 10000 as per Render docs
+    app.run(host="0.0.0.0", port=port)
